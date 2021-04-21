@@ -10,6 +10,7 @@ use siphasher::sip::SipHasher13;
 use std::cmp::Ordering::{Equal, Greater, Less};
 use std::hash::{Hash, Hasher};
 use std::iter::repeat;
+use serde::{Deserialize, Serialize};
 
 static TRESHOLD_DATA: [f64; 15] = [
     10.0, 20.0, 40.0, 80.0, 220.0, 400.0, 900.0, 1800.0, 3100.0, 6500.0, 11500.0, 20000.0, 50000.0,
@@ -3981,12 +3982,21 @@ static BIAS_DATA: &[&[f64]] = &[
     ],
 ];
 
+#[derive(Deserialize, Serialize, Clone)]
 pub struct HyperLogLog {
     alpha: f64,
     p: u8,
     m: usize,
     M: Vec<u8>,
     sip: SipHasher13,
+}
+
+impl std::fmt::Debug for HyperLogLog {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Point")
+            .field("len", &self.len())
+            .finish()
+    }
 }
 
 impl HyperLogLog {
@@ -4002,7 +4012,7 @@ impl HyperLogLog {
             p,
             m,
             M: repeat(0u8).take(m).collect(),
-            sip: SipHasher13::new_with_keys(rand::random(), rand::random()),
+            sip: SipHasher13::new_with_keys(0, 0),
         }
     }
 
