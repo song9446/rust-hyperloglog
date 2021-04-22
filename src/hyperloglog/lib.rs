@@ -6,11 +6,11 @@
 #![allow(non_snake_case)]
 #![allow(clippy::unreadable_literal)]
 
+use serde::{Deserialize, Serialize};
 use siphasher::sip::SipHasher13;
 use std::cmp::Ordering::{Equal, Greater, Less};
 use std::hash::{Hash, Hasher};
 use std::iter::repeat;
-use serde::{Deserialize, Serialize};
 
 static TRESHOLD_DATA: [f64; 15] = [
     10.0, 20.0, 40.0, 80.0, 220.0, 400.0, 900.0, 1800.0, 3100.0, 6500.0, 11500.0, 20000.0, 50000.0,
@@ -3993,9 +3993,7 @@ pub struct HyperLogLog {
 
 impl std::fmt::Debug for HyperLogLog {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("Point")
-            .field("len", &self.len())
-            .finish()
+        f.debug_struct("Point").field("len", &self.len()).finish()
     }
 }
 
@@ -4089,7 +4087,7 @@ impl HyperLogLog {
     }
 
     fn get_alpha(p: u8) -> f64 {
-        assert!(p >= 4 && p <= 16);
+        assert!((4..=16).contains(&p));
         match p {
             4 => 0.673,
             5 => 0.697,
